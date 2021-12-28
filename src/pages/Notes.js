@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Grid, Paper, Container } from '@mui/material';
+import NoteCard from '../components/NoteCard';
 const axios = require('axios');
 
 export default function Notes() {
@@ -11,11 +13,22 @@ export default function Notes() {
 		}
 	}, []);
 
+	const handleDelete = async (deleteId) => {
+		await axios.delete(`http://localhost:8000/notes/${deleteId}`);
+
+		const newNotes = notes.filter((note) => note.id !== deleteId);
+		setNotes(newNotes);
+	};
+
 	return (
-		<div>
-			{notes.map((note) => (
-				<p key={note.id}>{note.title}</p>
-			))}
-		</div>
+		<Container>
+			<Grid container spacing={3}>
+				{notes.map((note) => (
+					<Grid item key={note.id} xs={12} md={6} lg={4}>
+						<NoteCard note={note} onDelete={handleDelete} />
+					</Grid>
+				))}
+			</Grid>
+		</Container>
 	);
 }
